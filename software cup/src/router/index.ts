@@ -1,11 +1,11 @@
 import { createRouter, createWebHashHistory} from 'vue-router'
 import TiptapEditor from '../views/Editor.vue'
-import path = require('path');
-import TheWelcome from '@/components/TheWelcome.vue';
+// import path = require('path');
+import HomeView from '@/views/HomeView.vue';
 
 const routes = [
   { path: '/edit/:documentid', component: TiptapEditor},
-  { path: '/', component: TheWelcome},
+  { path: '/', component: HomeView},
 ];
 
 const router = createRouter({

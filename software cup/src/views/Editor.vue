@@ -8,7 +8,7 @@
     </div>
   </div>
 </template>
-  
+
 <script>
 
 import introJs from 'intro.js'
@@ -51,8 +51,7 @@ export default {
     this.timer = setInterval(this.rain, 20);
     // this.startIntro()
   },
-  beforeDestroy()
-  {
+  beforeDestroy() {
     clearInterval(this.timer);
   },
   components: {
@@ -64,7 +63,7 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 * {
   font-family: JingNanFont;
 }
@@ -120,7 +119,7 @@ body {
   top: 255px;
   height: 10px;
   line-height: 10px;
-  text-transform:lowercase;
+  text-transform: lowercase;
   color: #000;
   text-shadow: 0 0 5px #000,
     0 0 15px #000,
@@ -144,4 +143,3 @@ body {
   }
 }
 </style>
-

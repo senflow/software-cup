@@ -4,11 +4,11 @@
             <div :class="['container', 'container-register', { 'is-txl': isLoginHome }]">
                 <form>
                     <h2 class="title">注册</h2>
-                    <div class="form-icons">
+                    <!-- <div class="form-icons">
                         <img class="form-icon" src="@/assets/img/wechat.png" alt="微信登录" />
                         <img class="form-icon" src="@/assets/img/alipay.png" alt="支付宝登录" />
                         <img class="form-icon" src="@/assets/img/QQ.png" alt="QQ登录" />
-                    </div>
+                    </div> -->
                     <span class="text">或使用学号进行注册</span><br />
                     <input v-model="sid" class="form-input" type="text" placeholder="请输入学号" />
                     <input v-model="username" class="form-input" type="text" placeholder="请输入用户名" />
@@ -21,11 +21,11 @@
             <div :class="['container', 'container-login', { 'is-txl is-z200': isLoginHome }]">
                 <form>
                     <h2 class="title">登录</h2>
-                    <div class="form-icons">
+                    <!-- <div class="form-icons">
                         <img class="form-icon" src="@/assets/img/wechat.png" alt="微信登录" />
                         <img class="form-icon" src="@/assets/img/alipay.png" alt="支付宝登录" />
                         <img class="form-icon" src="@/assets/img/QQ.png" alt="QQ登录" />
-                    </div>
+                    </div> -->
                     <span class="text">或使用用户名登录</span>
                     <input v-model="sid" class="form-input" type="text" placeholder="请输入学号" />
                     <input v-model="password" class="form-input" type="password" placeholder="请输入密码"
@@ -67,16 +67,14 @@ export default {
 <script setup>
 import { isLoginVisible } from "@/globalVariables";
 import { ref } from "vue";
-import { userLogin, fetchUserDataBySid, userRegister } from "@/api/user"
+import { userLogin, userRegister } from "@/api/user"
 import { useUserStore } from '@/store/modules/user.ts'
-import { useRouter } from "vue-router";
 
 
 const sid = ref('');
 const username = ref('');
 const password = ref('');
 const checkPwd = ref('');
-const userInfo = ref();
 const isLoginHome = ref(true); // 前端使用，判断注册还是登录
 
 function cancel() {

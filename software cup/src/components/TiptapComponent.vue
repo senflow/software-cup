@@ -1,45 +1,42 @@
 <template>
   <div>
     <div class="editor1">
-     
-    <div class="editor1__container" v-if= "content0">
-      <!-- <editor-content class="editor1__content1" :editor="editor" /> -->
-      <div class="editor1__content1" style="display: flex; flex-direction: column; align-items: center;">
 
-      <div class="editor1__popover" >
-        <el-popover
-          placement="left"
-          width="200"
-          trigger="click"
-          :content="popoverContent" size="mini" style="float: left; width: 110px; margin-top: 3px;" class="left-pad1">
-          <el-button  :disabled="isPutDisabled" slot="reference" icon="el-icon-share" size="mini">分享链接</el-button>
-        </el-popover>
-        <!-- <el-button type="primary" :disabled="isDownloadDisabled" icon="el-icon-edit" @click="download">下载文件</el-button> -->
-        <el-button  :disabled="isLimitDisabled" icon="el-icon-edit" @click="changelimit" size="mini" style="width: 130px;" class="left-pad2">修改权限</el-button>
-        <el-button :disabled="isTitleDisabled" @click="upload" icon="el-icon-upload"  size="mini" style="width: 130px;" class="left-pad3">提交标题</el-button>
-        
+      <div class="editor1__container" v-if="content0">
+        <!-- <editor-content class="editor1__content1" :editor="editor" /> -->
+        <div class="editor1__content1" style="display: flex; flex-direction: column; align-items: center;">
 
-        <el-select v-model="value" placeholder="下载文档" @change="handleOptionChange" style="width: 130px;" class="no-arrow left-pad4">
-          
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
+          <div class="editor1__popover">
+            <el-popover placement="left" width="200" trigger="click" :content="popoverContent" size="mini"
+              style="float: left; width: 110px; margin-top: 3px;" class="left-pad1">
+              <el-button :disabled="isPutDisabled" slot="reference" icon="el-icon-share" size="mini">分享链接</el-button>
+            </el-popover>
+            <!-- <el-button type="primary" :disabled="isDownloadDisabled" icon="el-icon-edit" @click="download">下载文件</el-button> -->
+            <el-button :disabled="isLimitDisabled" icon="el-icon-edit" @click="changelimit" size="mini"
+              style="width: 130px;" class="left-pad2">修改权限</el-button>
+            <el-button :disabled="isTitleDisabled" @click="upload" icon="el-icon-upload" size="mini"
+              style="width: 130px;" class="left-pad3">提交标题</el-button>
+
+
+            <el-select v-model="value" placeholder="下载文档" @change="handleOptionChange" style="width: 130px;"
+              class="no-arrow left-pad4">
+
+              <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+              </el-option>
+            </el-select>
+          </div>
+
+        </div>
       </div>
+    </div>
 
-      </div>
-    </div>   
-  </div>
-
-  <div class="editor" v-if="editor">
-    <el-input class="centered-text-input" placeholder="请输入内容" v-model="input" :disabled="isLiDisabled" style=" text-align: center; width: 800px; font-size: 30px;">
+    <div class="editor" v-if="editor">
+      <el-input class="centered-text-input" placeholder="请输入内容" v-model="input" :disabled="isLiDisabled"
+        style=" text-align: center; width: 800px; font-size: 30px;">
       </el-input>
-    <menu-bar class="editor__header" :editor="editor" />
-    <editor-content class="editor__content" :editor="editor" />
-    <div class="editor__footer">
+      <menu-bar class="editor__header" :editor="editor" />
+      <editor-content class="editor__content" :editor="editor" />
+      <div class="editor__footer">
         <div :class="`editor__status editor__status--${status}`">
           <template v-if="true">
             {{ currentEditable }}
@@ -54,17 +51,17 @@
           <!-- <button @click="setName">
             {{ currentUser.name }}
           </button> -->
-           <button v-if="currentUser.name">
+          <button v-if="currentUser.name">
             {{ currentUser.name }}
           </button>
           <button v-else>
-          游客 
+            游客
           </button>
         </div>
       </div>
+    </div>
   </div>
-  </div>
-  
+
 </template>
 
 <script>
@@ -86,22 +83,21 @@ import 'intro.js/introjs.css';
 import suggestion from '../utils/suggestion.js'
 // import { getLimit } from '@/api/api';
 
-import { changeDocument, getLimit, getDocumentByID, getRole, convertFormat} from '@/api/api';
+import { changeDocument, getLimit, getDocumentByID, getRole, convertFormat } from '@/api/api';
 
 // import { variables } from '../../variables.js'
 // import MenuBar from './MenuBar.vue'
 
-  const getRandomElement = list => {
-    return list[Math.floor(Math.random() * list.length)]
-  }
+const getRandomElement = list => {
+  return list[Math.floor(Math.random() * list.length)]
+}
 
 
 export default {
   components: {
     EditorContent,
-    MenuBar,
   },
-  props:['documentid'],
+  props: ['documentid'],
   // props: {
   //   value: {
   //     type: String,
@@ -112,36 +108,36 @@ export default {
   data() {
     return {
       options: [{
-          value: 'option1',
-          label: 'PDF'
-        }, {
-          value: 'option2',
-          label: 'Markdown'
-        }, {
-          value: 'option3',
-          label: 'Word'
-        },],
+        value: 'option1',
+        label: 'PDF'
+      }, {
+        value: 'option2',
+        label: 'Markdown'
+      }, {
+        value: 'option3',
+        label: 'Word'
+      },],
       value: '',
-      input:'',
+      input: '',
       currentUser: JSON.parse(localStorage.getItem('currentUser')) || {
         name: localStorage.getItem('username'),
         color: this.getRandomColor(),
       },
       msg: {
-              doc_name: '',
-              doc_id: '',
-              team_id: '',
-              file_format: 'pdf',
-              html: ''
-            },
+        doc_name: '',
+        doc_id: '',
+        team_id: '',
+        file_format: 'pdf',
+        html: ''
+      },
       currentEditable: "在线编辑",
       provider: null,
       editor: null,
       status: 'connecting',
       // room: getRandomRoom(),
       msg: {
-              doc_template: '',
-            },
+        doc_template: '',
+      },
       content0: false,//是否从后端获取文档标题
       isLiDisabled: true,
       isLimitDisabled: true, // 初始状态为禁用
@@ -175,7 +171,7 @@ export default {
       // 返回生成的内容
       return `${currentUrl}`;
     },
-},
+  },
   mounted() {
     const ydoc = new Y.Doc()
     // Store the Y document in the browser
@@ -186,7 +182,7 @@ export default {
       name: this.documentid,
       document: ydoc,
     })
-    
+
     this.editor = new Editor({
       // content: this.msg.doc_template,
       content: this.msg.doc_template,
@@ -222,7 +218,7 @@ export default {
           renderLabel({ options, node }) {
             return `${options.suggestion.char}${node.attrs.label ?? node.attrs.id}`
           },
-            suggestion,
+          suggestion,
         }),
 
         CharacterCount.configure({
@@ -242,52 +238,51 @@ export default {
   },
 
   async created() {
-  try{
-    const docResponse = await getDocumentByID(this.documentid);
-    if (docResponse.data.status === 'success') {
-      this.input = docResponse.data.data.doc_name;
-      this.msg.doc_name = docResponse.data.data.doc_name;
-    }
-    const name = getToken('username');
-    const limitResponse = await getLimit(this.documentid, name);
-    if (limitResponse.data.status === 'success') {
-      this.editor.setEditable(true);
-      this.isLiDisabled = false;
-      setToken('editable', true);
-      this.isDownloadDisabled = false;
-      this.isTitleDisabled = false;
-    } else {
-      this.editor.setEditable(false);
-      this.isLiDisabled = true;
-      this.isDownloadDisabled = true;
-      this.isTitleDisabled = true;
-    }
+    try {
+      const docResponse = await getDocumentByID(this.documentid);
+      if (docResponse.data.status === 'success') {
+        this.input = docResponse.data.data.doc_name;
+        this.msg.doc_name = docResponse.data.data.doc_name;
+      }
+      const name = getToken('username');
+      const limitResponse = await getLimit(this.documentid, name);
+      if (limitResponse.data.status === 'success') {
+        this.editor.setEditable(true);
+        this.isLiDisabled = false;
+        setToken('editable', true);
+        this.isDownloadDisabled = false;
+        this.isTitleDisabled = false;
+      } else {
+        this.editor.setEditable(false);
+        this.isLiDisabled = true;
+        this.isDownloadDisabled = true;
+        this.isTitleDisabled = true;
+      }
 
-    if (docResponse.data.status === 'success') {
-      this.msg.team_id = docResponse.data.data.team_id;
-    }
-    console.log(name)
-    if(name === null)
-    {
+      if (docResponse.data.status === 'success') {
+        this.msg.team_id = docResponse.data.data.team_id;
+      }
+      console.log(name)
+      if (name === null) {
         this.isLimitDisabled = true;
         this.isPutDisabled = true;
-    }
-    else{
-      const roleResponse = await getRole(this.msg.team_id, name);
-      if (roleResponse.data.status === 'success') {
-        if (roleResponse.data.role === 'Creator' || roleResponse.data.role === 'Admin') {
-          this.isLimitDisabled = false;
-          this.isPutDisabled = false;
+      }
+      else {
+        const roleResponse = await getRole(this.msg.team_id, name);
+        if (roleResponse.data.status === 'success') {
+          if (roleResponse.data.role === 'Creator' || roleResponse.data.role === 'Admin') {
+            this.isLimitDisabled = false;
+            this.isPutDisabled = false;
+          }
         }
-    }
-  }
-    this.content0 = true;
+      }
+      this.content0 = true;
 
-  } catch (error) {
-    // 处理错误
-    console.error(error);
-  }
-},
+    } catch (error) {
+      // 处理错误
+      console.error(error);
+    }
+  },
   // created() {
   //   const name = getToken('username'); // 根据实际情况获取 token
 
@@ -320,7 +315,7 @@ export default {
           exitOnOverlayClick: false,
           disableInteraction: true,
           steps: [
-          {
+            {
               element: document.querySelector('.el-icon-share'),
               title: '文件操作',
               intro: '在此处可以进行多种文件操作，满足您的各种需求',
@@ -337,7 +332,7 @@ export default {
               title: '编辑器',
               intro: '灰常好用的编辑器！欢迎使用~',
               position: 'top'
-            }, ],
+            },],
           //overlayOpacity: 1.0, // 设置遮罩层透明度
           disableInteraction: true, // 禁止用户与遮罩层下方的元素进行交互
         }).start();
@@ -369,119 +364,119 @@ export default {
       this.downloadWord();
       console.log('选项3被选中');
     },
-      setName() {
-        const name = (window.prompt('Name') || '')
-          .trim()
-          .substring(0, 32)
-  
-        if (name) {
-          return this.updateCurrentUser({
-            name,
-          })
+    setName() {
+      const name = (window.prompt('Name') || '')
+        .trim()
+        .substring(0, 32)
+
+      if (name) {
+        return this.updateCurrentUser({
+          name,
+        })
+      }
+    },
+
+    getRandomColor() {
+      return getRandomElement([
+        '#958DF1',
+        '#F98181',
+        '#FBBC88',
+        '#FAF594',
+        '#70CFF8',
+        '#94FADB',
+        '#B9F18D',
+      ])
+    },
+    downloadPdf() {
+      this.msg.doc_id = this.documentid;
+      this.msg.file_format = "pdf";
+      this.msg.html = this.editor.getHTML();
+      console.log(this.editor.getHTML());
+      convertFormat(this.msg).then(res => {
+        console.log(res)
+        if (res.data.status === 'success') {
+          // 构建文件下载链接
+          const downloadLink = document.createElement('a');
+          downloadLink.href = `http://se.leonardsaikou.top/trans_doc/${this.msg.doc_id}.${this.msg.file_format}`;
+          downloadLink.download = `document.${this.msg.file_format}`;
+          document.body.appendChild(downloadLink);
+
+          // 模拟点击链接来触发下载
+          downloadLink.click();
+
+          // 清理 DOM 元素
+          document.body.removeChild(downloadLink);
+
+          this.$message({
+            type: 'success',
+            message: '下载成功'
+          });
+        } else {
+          console.log("fail download")
         }
-      },
-  
-      getRandomColor() {
-        return getRandomElement([
-          '#958DF1',
-          '#F98181',
-          '#FBBC88',
-          '#FAF594',
-          '#70CFF8',
-          '#94FADB',
-          '#B9F18D',
-        ])
-      },
-      downloadPdf(){
-        this.msg.doc_id = this.documentid;
-        this.msg.file_format = "pdf";
-        this.msg.html = this.editor.getHTML();
-        console.log(this.editor.getHTML());
-        convertFormat(this.msg).then(res => {
-          console.log(res)
-                        if (res.data.status === 'success') {
-                        // 构建文件下载链接
-                        const downloadLink = document.createElement('a');
-                        downloadLink.href = `http://se.leonardsaikou.top/trans_doc/${this.msg.doc_id}.${this.msg.file_format}`;
-                        downloadLink.download = `document.${this.msg.file_format}`;
-                        document.body.appendChild(downloadLink);
+      }
+      )
+    },
+    downloadWord() {
+      this.msg.doc_id = this.documentid;
+      this.msg.file_format = "docx";
+      this.msg.html = this.editor.getHTML();
+      console.log(this.editor.getHTML());
+      convertFormat(this.msg).then(res => {
+        console.log(res)
+        if (res.data.status === 'success') {
+          // 构建文件下载链接
+          const downloadLink = document.createElement('a');
+          downloadLink.href = `http://se.leonardsaikou.top/trans_doc/${this.msg.doc_id}.${this.msg.file_format}`;
+          downloadLink.download = `document.${this.msg.file_format}`;
+          document.body.appendChild(downloadLink);
 
-                        // 模拟点击链接来触发下载
-                        downloadLink.click();
+          // 模拟点击链接来触发下载
+          downloadLink.click();
 
-                        // 清理 DOM 元素
-                        document.body.removeChild(downloadLink);
+          // 清理 DOM 元素
+          document.body.removeChild(downloadLink);
 
-                            this.$message({
-                                type: 'success',
-                                message: '下载成功'
-                            });
-                        } else {      
-                          console.log("fail download")
-                        }
-                    }
-            )
-      },
-      downloadWord(){
-        this.msg.doc_id = this.documentid;
-        this.msg.file_format = "docx";
-        this.msg.html = this.editor.getHTML();
-        console.log(this.editor.getHTML());
-        convertFormat(this.msg).then(res => {
-          console.log(res)
-                        if (res.data.status === 'success') {
-                        // 构建文件下载链接
-                        const downloadLink = document.createElement('a');
-                        downloadLink.href = `http://se.leonardsaikou.top/trans_doc/${this.msg.doc_id}.${this.msg.file_format}`;
-                        downloadLink.download = `document.${this.msg.file_format}`;
-                        document.body.appendChild(downloadLink);
+          this.$message({
+            type: 'success',
+            message: '下载成功'
+          });
+        } else {
+          console.log("fail download")
+        }
+      }
+      )
+    },
+    downloadMd() {
+      this.msg.doc_id = this.documentid;
+      this.msg.file_format = "md";
+      this.msg.html = this.editor.getHTML();
+      console.log(this.editor.getHTML());
+      convertFormat(this.msg).then(res => {
+        console.log(res)
+        if (res.data.status === 'success') {
+          // 构建文件下载链接
+          const downloadLink = document.createElement('a');
+          downloadLink.href = `http://se.leonardsaikou.top/trans_doc/${this.msg.doc_id}.${this.msg.file_format}`;
+          downloadLink.download = `document.${this.msg.file_format}`;
+          document.body.appendChild(downloadLink);
 
-                        // 模拟点击链接来触发下载
-                        downloadLink.click();
+          // 模拟点击链接来触发下载
+          downloadLink.click();
 
-                        // 清理 DOM 元素
-                        document.body.removeChild(downloadLink);
+          // 清理 DOM 元素
+          document.body.removeChild(downloadLink);
 
-                            this.$message({
-                                type: 'success',
-                                message: '下载成功'
-                            });
-                        } else {      
-                          console.log("fail download")
-                        }
-                    }
-            )
-      },
-      downloadMd(){
-        this.msg.doc_id = this.documentid;
-        this.msg.file_format = "md";
-        this.msg.html = this.editor.getHTML();
-        console.log(this.editor.getHTML());
-        convertFormat(this.msg).then(res => {
-          console.log(res)
-                        if (res.data.status === 'success') {
-                        // 构建文件下载链接
-                        const downloadLink = document.createElement('a');
-                        downloadLink.href = `http://se.leonardsaikou.top/trans_doc/${this.msg.doc_id}.${this.msg.file_format}`;
-                        downloadLink.download = `document.${this.msg.file_format}`;
-                        document.body.appendChild(downloadLink);
-
-                        // 模拟点击链接来触发下载
-                        downloadLink.click();
-
-                        // 清理 DOM 元素
-                        document.body.removeChild(downloadLink);
-
-                            this.$message({
-                                type: 'success',
-                                message: '下载成功'
-                            });
-                        } else {      
-                          console.log("fail download")
-                        }
-                    }
-            )
-      },
+          this.$message({
+            type: 'success',
+            message: '下载成功'
+          });
+        } else {
+          console.log("fail download")
+        }
+      }
+      )
+    },
     //   download(){
     //   this.msg.doc_id = this.documentid;
     //   this.msg.file_format = "pdf";
@@ -518,19 +513,19 @@ export default {
       this.msg.doc_id = this.documentid;
       this.msg.doc_name = this.input;
       changeDocument(this.msg).then(res => {
-                        console.log(res)
-                        if (res.data.status === 'success') {
-                            console.log("change title")
-                            this.$message({
-                                type: 'success',
-                                message: '修改成功'
-                            });
-                        } else {      
-                          console.log("fail change title")
-                        }
-                    }
-            )
-      
+        console.log(res)
+        if (res.data.status === 'success') {
+          console.log("change title")
+          this.$message({
+            type: 'success',
+            message: '修改成功'
+          });
+        } else {
+          console.log("fail change title")
+        }
+      }
+      )
+
     },
     changelimit() {
       // 在这里编写上传的方法逻辑
@@ -539,63 +534,67 @@ export default {
       this.msg.doc_name = '';
 
       changeDocument(this.msg).then(res => {
-          console.log(this.msg)
-                  console.log(res)
-                    if (res.data.status === 'success') {
-                                console.log("change limit")
-                                getDocumentByID(this.documentid).then(res => {
-                                  if (res.data.status === 'success') {
-                                      console.log("get limit")
-                                      console.log(res.data.data.editable_by_guests)
-                                      if(res.data.data.editable_by_guests === true){
-                                        this.$message({
-                                                type: 'success',
-                                                message: '修改游客权限为可编辑'
-                                            });
+        console.log(this.msg)
+        console.log(res)
+        if (res.data.status === 'success') {
+          console.log("change limit")
+          getDocumentByID(this.documentid).then(res => {
+            if (res.data.status === 'success') {
+              console.log("get limit")
+              console.log(res.data.data.editable_by_guests)
+              if (res.data.data.editable_by_guests === true) {
+                this.$message({
+                  type: 'success',
+                  message: '修改游客权限为可编辑'
+                });
 
-                                      }else{
-                                        this.$message({
-                                                type: 'success',
-                                                message: '修改游客权限为只读'
-                                            });
-                                      }
-                        } else {      
-                          console.log("fail get limit")
-                        }
-                    }
-            )             
-              } else {      
-                console.log("fail change limit")
-                }
+              } else {
+                this.$message({
+                  type: 'success',
+                  message: '修改游客权限为只读'
+                });
+              }
+            } else {
+              console.log("fail get limit")
+            }
           }
-      )     
-  },    
+          )
+        } else {
+          console.log("fail change limit")
+        }
+      }
+      )
+    },
 
-    },
-  
-    beforeDestroy() {
-      this.editor.destroy()
-      this.provider.destroy()
-    },
+  },
+
+  beforeDestroy() {
+    this.editor.destroy()
+    this.provider.destroy()
+  },
 
 
 }
 </script>
 
 
-<style lang="scss" >
-.left-pad1{
+<style lang="scss" scoped>
+.left-pad1 {
   margin-left: 20px;
 }
-.left-pad2{
+
+.left-pad2 {
   margin-left: 20px;
 }
-.left-pad3{
+
+.left-pad3 {
   margin-left: 20px;
 }
-.left-pad4{
+
+.left-pad4 {
   margin-left: 20px;
 }
+
 .editor1__container {
   display: flex;
   align-items: center;
@@ -623,7 +622,8 @@ export default {
 
 
 
-  &__content1, &__content1 {
+  &__content1,
+  &__content1 {
     flex: 1 1 auto;
     overflow-x: hidden;
     overflow-y: auto;
@@ -819,7 +819,8 @@ export default {
 }
 
 .no-arrow .el-input__suffix {
-  display: none; /* 隐藏输入框右侧的箭头图标 */
+  display: none;
+  /* 隐藏输入框右侧的箭头图标 */
 }
 
 
