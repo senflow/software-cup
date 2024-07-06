@@ -25,8 +25,6 @@
     "@tiptap/suggestion": "^2.0.0",
     "@tiptap/vue-3": "^2.4.0",
     "axios": "^1.7.2",
-    "element-plus": "^2.7.6",
-    "element-tiptap": "^2.2.1",
     "intro.js": "^7.2.0",
     "vue": "^3.4.29",
     "vue-router": "^4.3.3",
