@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div class="editor-container">
     <div class="component-container2">
       <TiptapComponent :documentid='documentid' />
@@ -14,7 +14,7 @@
 import introJs from 'intro.js'
 import 'intro.js/introjs.css';
 import TiptapComponent from '@/components/TiptapComponent.vue';
-// import TittleTiptap from '@/components/TittleTiptap.vue';
+
 import { changeyNewB } from '@/api/api';
 export default {
   data() {
@@ -142,4 +142,40 @@ body {
     transform: translateY(390px) scale(1);
   }
 }
-</style>
+</style> -->
+<template>
+  <editor-content :editor3="editor" />
+</template>
+
+<script lang="ts">
+import { defineComponent, onMounted, onBeforeUnmount, ref } from 'vue';
+import { Editor, EditorContent } from '@tiptap/vue-3';
+import StarterKit from '@tiptap/starter-kit';
+
+export default defineComponent({
+  components: {
+      EditorContent,
+  },
+
+  setup() {
+      // 使用ref创建可变的响应式引用
+      const editor = ref<Editor | null>(null);
+
+      // 在组件挂载后初始化Editor
+      onMounted(() => {
+          editor.value = new Editor({
+              content: '<p>欢迎使用Tiptap!🎉</p>',
+              extensions: [StarterKit],
+          });
+      });
+
+      // 在组件卸载前销毁Editor实例
+      onBeforeUnmount(() => {
+          editor.value?.destroy();
+      });
+
+      // 返回editor供模板使用
+      return { editor };
+  },
+});
+</script>
