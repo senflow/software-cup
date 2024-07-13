@@ -1,9 +1,9 @@
 <template>
-  <el-container>
-    <el-aside width="200px">
-      <Aside style="height: 1000px;"></Aside>
+  <el-container class="main-container">
+    <el-aside width="200px" class="aside">
+      <Aside style="height: 100%;"></Aside>
     </el-aside>
-    <el-container>
+    <el-container class="content-container">
       <el-header class="header">
         <div class="left-header">
           <el-button @click="create()">新建</el-button>
@@ -28,7 +28,7 @@
           </el-dropdown>
         </div>
       </el-header>
-      <el-main>
+      <el-main class="main">
         <div class="filter-options">
           <el-button @click="filterType = 'recent'">最近</el-button>
           <el-button @click="filterType = 'favorites'">收藏</el-button>
@@ -40,8 +40,10 @@
           <el-col :span="4">文档大小</el-col>
         </el-row>
         <div class="card-container">
-          <file-card v-for="file in filteredFiles" :key="file.name" v-bind="file"></file-card>
+          <file-card v-for="file in paginatedFiles" :key="file.name" v-bind="file"></file-card>
         </div>
+        <el-pagination class="pagination" :current-page="currentPage" :page-size="pageSize"
+          :total="filteredFiles.length" @current-change="handlePageChange" layout="prev, pager, next" />
       </el-main>
     </el-container>
   </el-container>
@@ -68,7 +70,7 @@ import { useUserStore } from '@/store/modules/user';
 
 import {
   ElContainer, ElAside, ElHeader, ElMain, ElButton,
-  ElDropdown, ElDropdownMenu, ElDropdownItem, ElAvatar, ElRow, ElCol
+  ElDropdown, ElDropdownMenu, ElDropdownItem, ElAvatar, ElRow, ElCol, ElPagination
 } from 'element-plus';
 
 const avatar = ref('@/assets/avatar.png');
@@ -99,6 +101,9 @@ const files = ref([
   { name: '挑战性任务报名', owner: 'yofingert', recent: '06-27 20:19', size: '-', checked: false, icon: 'el-icon-document' },
 ]);
 
+const pageSize = 8;
+const currentPage = ref(1);
+
 const filteredFiles = computed(() => {
   if (filterType.value === 'recent') {
     return files.value;
@@ -106,9 +111,35 @@ const filteredFiles = computed(() => {
   // 根据需要添加其他过滤逻辑
   return files.value.filter(file => file.checked);
 });
+
+const paginatedFiles = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  return filteredFiles.value.slice(start, start + pageSize);
+});
+
+const handlePageChange = (page: number) => {
+  currentPage.value = page;
+};
 </script>
 
 <style scoped>
+.main-container {
+  display: flex;
+  height: 98vh;
+}
+
+.aside {
+  background-color: #f5f5f5;
+  margin-top: -10px;
+  margin-left: -5px;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -117,6 +148,9 @@ const filteredFiles = computed(() => {
   background-color: #000001;
   height: 80px;
   padding: 0 20px;
+  box-sizing: border-box;
+  margin-right: -8px;
+  margin-top: -10px;
 }
 
 .left-header {
@@ -179,5 +213,12 @@ const filteredFiles = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.pagination {
+  margin-top: 10px;
+  text-align: center;
 }
 </style>
