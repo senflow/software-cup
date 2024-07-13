@@ -1,9 +1,9 @@
 <template>
-  <el-container>
-    <el-aside width="200px">
-      <Aside style="height: 100vh;"></Aside>
+  <el-container class="main-container">
+    <el-aside width="200px" class="aside">
+      <Aside style="height: 100%;"></Aside>
     </el-aside>
-    <el-container>
+    <el-container class="content-container">
       <el-header class="header">
         <div class="left-header">
           <el-button @click="create()">新建</el-button>
@@ -28,7 +28,7 @@
           </el-dropdown>
         </div>
       </el-header>
-      <el-main>
+      <el-main class="main">
         <div class="filter-options">
           <el-button @click="filterType = 'recent'">最近</el-button>
           <el-button @click="filterType = 'favorites'">收藏</el-button>
@@ -99,18 +99,9 @@ const files = ref([
   { name: '2024暑假一轮选课', owner: '0625', recent: '06-28 18:12', size: '35.17 KB', checked: false, icon: 'el-icon-document' },
   { name: '班级统计', owner: '星空下的暴走奶昔', recent: '06-27 21:16', size: '22.53 KB', checked: false, icon: 'el-icon-document' },
   { name: '挑战性任务报名', owner: 'yofingert', recent: '06-27 20:19', size: '-', checked: false, icon: 'el-icon-document' },
-  { name: '大班课程报名登记表111', owner: 'CCTS', recent: '20:01', size: '375.75 MB', checked: false, icon: 'el-icon-document' },
-  { name: '2221大班暑期在校信息统计111', owner: 'Sunny', recent: '07-09 23:53', size: '-', checked: false, icon: 'el-icon-document' },
-  { name: '试点通过名单111', owner: '黄梁淳矣', recent: '07-06 21:29', size: '18.47 KB', checked: false, icon: 'el-icon-document' },
-  { name: '神山寺昨天大都是大V111', owner: 'kk_tatay', recent: '07-06 16:20', size: '1.65 KB', checked: false, icon: 'el-icon-document' },
-  { name: '讲师互评表格111', owner: '0625', recent: '07-06 01:09', size: '23.23 KB', checked: false, icon: 'el-icon-document' },
-  { name: 'OS 助教报名111', owner: 'yofingert', recent: '07-05 20:22', size: '22.77 MB', checked: false, icon: 'el-icon-document' },
-  { name: '2024暑假一轮选课111', owner: '0625', recent: '06-28 18:12', size: '35.17 KB', checked: false, icon: 'el-icon-document' },
-  { name: '班级统计111', owner: '星空下的暴走奶昔', recent: '06-27 21:16', size: '22.53 KB', checked: false, icon: 'el-icon-document' },
-  { name: '挑战性任务报名111', owner: 'yofingert', recent: '06-27 20:19', size: '-', checked: false, icon: 'el-icon-document' },
 ]);
 
-const pageSize = 9;
+const pageSize = 8;
 const currentPage = ref(1);
 
 const filteredFiles = computed(() => {
@@ -132,6 +123,23 @@ const handlePageChange = (page: number) => {
 </script>
 
 <style scoped>
+.main-container {
+  display: flex;
+  height: 98vh;
+}
+
+.aside {
+  background-color: #f5f5f5;
+  margin-top: -10px;
+  margin-left: -5px;
+}
+
+.content-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
 .header {
   display: flex;
   justify-content: space-between;
@@ -140,6 +148,9 @@ const handlePageChange = (page: number) => {
   background-color: #000001;
   height: 80px;
   padding: 0 20px;
+  box-sizing: border-box;
+  margin-right: -8px;
+  margin-top: -10px;
 }
 
 .left-header {
@@ -202,10 +213,8 @@ const handlePageChange = (page: number) => {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-height: calc(100vh - 150px);
-  /* Adjust height to fit the screen */
   overflow-y: auto;
-  /* Add scroll if necessary */
+  flex: 1;
 }
 
 .pagination {

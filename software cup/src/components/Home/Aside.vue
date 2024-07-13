@@ -1,5 +1,6 @@
 <template>
     <el-aside width="200px" class="aside">
+        <br />
         <div class="logo">
             <img src="@/assets/img/logo.png" alt="logo" />
             <span>智能编辑器</span>
