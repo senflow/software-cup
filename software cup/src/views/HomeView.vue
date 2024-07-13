@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-aside width="200px">
-      <Aside style="height: 1000px;"></Aside>
+      <Aside style="height: 100vh;"></Aside>
     </el-aside>
     <el-container>
       <el-header class="header">
@@ -40,8 +40,10 @@
           <el-col :span="4">文档大小</el-col>
         </el-row>
         <div class="card-container">
-          <file-card v-for="file in filteredFiles" :key="file.name" v-bind="file"></file-card>
+          <file-card v-for="file in paginatedFiles" :key="file.name" v-bind="file"></file-card>
         </div>
+        <el-pagination class="pagination" :current-page="currentPage" :page-size="pageSize"
+          :total="filteredFiles.length" @current-change="handlePageChange" layout="prev, pager, next" />
       </el-main>
     </el-container>
   </el-container>
@@ -68,7 +70,7 @@ import { useUserStore } from '@/store/modules/user';
 
 import {
   ElContainer, ElAside, ElHeader, ElMain, ElButton,
-  ElDropdown, ElDropdownMenu, ElDropdownItem, ElAvatar, ElRow, ElCol
+  ElDropdown, ElDropdownMenu, ElDropdownItem, ElAvatar, ElRow, ElCol, ElPagination
 } from 'element-plus';
 
 const avatar = ref('@/assets/avatar.png');
@@ -97,7 +99,19 @@ const files = ref([
   { name: '2024暑假一轮选课', owner: '0625', recent: '06-28 18:12', size: '35.17 KB', checked: false, icon: 'el-icon-document' },
   { name: '班级统计', owner: '星空下的暴走奶昔', recent: '06-27 21:16', size: '22.53 KB', checked: false, icon: 'el-icon-document' },
   { name: '挑战性任务报名', owner: 'yofingert', recent: '06-27 20:19', size: '-', checked: false, icon: 'el-icon-document' },
+  { name: '大班课程报名登记表111', owner: 'CCTS', recent: '20:01', size: '375.75 MB', checked: false, icon: 'el-icon-document' },
+  { name: '2221大班暑期在校信息统计111', owner: 'Sunny', recent: '07-09 23:53', size: '-', checked: false, icon: 'el-icon-document' },
+  { name: '试点通过名单111', owner: '黄梁淳矣', recent: '07-06 21:29', size: '18.47 KB', checked: false, icon: 'el-icon-document' },
+  { name: '神山寺昨天大都是大V111', owner: 'kk_tatay', recent: '07-06 16:20', size: '1.65 KB', checked: false, icon: 'el-icon-document' },
+  { name: '讲师互评表格111', owner: '0625', recent: '07-06 01:09', size: '23.23 KB', checked: false, icon: 'el-icon-document' },
+  { name: 'OS 助教报名111', owner: 'yofingert', recent: '07-05 20:22', size: '22.77 MB', checked: false, icon: 'el-icon-document' },
+  { name: '2024暑假一轮选课111', owner: '0625', recent: '06-28 18:12', size: '35.17 KB', checked: false, icon: 'el-icon-document' },
+  { name: '班级统计111', owner: '星空下的暴走奶昔', recent: '06-27 21:16', size: '22.53 KB', checked: false, icon: 'el-icon-document' },
+  { name: '挑战性任务报名111', owner: 'yofingert', recent: '06-27 20:19', size: '-', checked: false, icon: 'el-icon-document' },
 ]);
+
+const pageSize = 9;
+const currentPage = ref(1);
 
 const filteredFiles = computed(() => {
   if (filterType.value === 'recent') {
@@ -106,6 +120,15 @@ const filteredFiles = computed(() => {
   // 根据需要添加其他过滤逻辑
   return files.value.filter(file => file.checked);
 });
+
+const paginatedFiles = computed(() => {
+  const start = (currentPage.value - 1) * pageSize;
+  return filteredFiles.value.slice(start, start + pageSize);
+});
+
+const handlePageChange = (page: number) => {
+  currentPage.value = page;
+};
 </script>
 
 <style scoped>
@@ -179,5 +202,14 @@ const filteredFiles = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  max-height: calc(100vh - 150px);
+  /* Adjust height to fit the screen */
+  overflow-y: auto;
+  /* Add scroll if necessary */
+}
+
+.pagination {
+  margin-top: 10px;
+  text-align: center;
 }
 </style>
