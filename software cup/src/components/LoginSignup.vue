@@ -4,13 +4,21 @@
             <div :class="['container', 'container-register', { 'is-txl': isLoginHome }]">
                 <form>
                     <h2 class="title">注册</h2>
-                    <!-- <div class="form-icons">
+                    <div class="form-icons">
                         <img class="form-icon" src="@/assets/img/wechat.png" alt="微信登录" />
                         <img class="form-icon" src="@/assets/img/alipay.png" alt="支付宝登录" />
                         <img class="form-icon" src="@/assets/img/QQ.png" alt="QQ登录" />
-                    </div> -->
-                    <span class="text">或使用学号进行注册</span><br />
-                    <input v-model="sid" class="form-input" type="text" placeholder="请输入学号" />
+                    </div>
+                    <br /><br />
+                    <input v-model="email" class="form-input" type="text" placeholder="请输入邮箱"
+                        @keyup.enter="registerOperation()" />
+                    <div class="form-input-group">
+                        <input v-model="verificationCode" class="form-input-left" type="text" placeholder="请输入验证码" />
+                        <el-button size="large" @click="mySendVerificationCode"
+                            :disabled="isSending || countdown > 0">{{
+                                countdown > 0
+                                    ? countdown + 's 后重新发送' : '获取验证码' }}</el-button>
+                    </div>
                     <input v-model="username" class="form-input" type="text" placeholder="请输入用户名" />
                     <input v-model="password" class="form-input" type="password" placeholder="请输入密码" />
                     <input v-model="checkPwd" class="form-input" type="password" placeholder="请再次输入密码"
@@ -21,13 +29,14 @@
             <div :class="['container', 'container-login', { 'is-txl is-z200': isLoginHome }]">
                 <form>
                     <h2 class="title">登录</h2>
-                    <!-- <div class="form-icons">
+                    <div class="form-icons">
                         <img class="form-icon" src="@/assets/img/wechat.png" alt="微信登录" />
                         <img class="form-icon" src="@/assets/img/alipay.png" alt="支付宝登录" />
                         <img class="form-icon" src="@/assets/img/QQ.png" alt="QQ登录" />
-                    </div> -->
-                    <span class="text">或使用用户名登录</span>
-                    <input v-model="sid" class="form-input" type="text" placeholder="请输入学号" />
+                    </div>
+                    <!-- <span class="text">或使用用户名登录</span> -->
+                    <br /><br /><br /><br /><br />
+                    <input v-model="email" class="form-input" type="text" placeholder="请输入邮箱" />
                     <input v-model="password" class="form-input" type="password" placeholder="请输入密码"
                         @keyup.enter="loginOperation()" />
                     <div class="form-button" @click="loginOperation()">立即登录</div>
@@ -50,7 +59,7 @@
                     <div class="form-button" @click="isLoginHome = !isLoginHome">
                         {{ isLoginHome ? "立即注册" : "立即登录" }}
                     </div>
-                    <div class="cancel-button" @click="adminLogin">管理员登录</div>
+                    <!-- <div class="cancel-button" @click="adminLogin">管理员登录</div> -->
                     <div class="cancel-button" @click="cancel">取消</div>
                 </div>
             </div>
@@ -67,15 +76,54 @@ export default {
 <script setup>
 import { isLoginVisible } from "@/globalVariables";
 import { ref } from "vue";
-import { userLogin, userRegister } from "@/api/user"
+import { userLogin, userRegister, sendVerificationCode } from "@/api/user"
 import { useUserStore } from '@/store/modules/user.ts'
+import { ElMessage } from "element-plus";
 
 
-const sid = ref('');
+const email = ref('');
 const username = ref('');
 const password = ref('');
 const checkPwd = ref('');
+const verificationCode = ref('');
+const countdown = ref(0);
+const isSending = ref(false);
 const isLoginHome = ref(true); // 前端使用，判断注册还是登录
+
+const mySendVerificationCode = async () => {
+    if (!validateEmail(email.value)) {
+        ElMessage.error('请输入合法的邮箱地址');
+        return;
+    }
+
+    isSending.value = true;
+    const response = await sendVerificationCode(email.value);
+    console.log(response);
+    const data = await response.json();
+    if (data.status == 200) {
+        ElMessage.success('发送成功');
+        startCountdown();
+    }
+    else ElMessage.error('发送失败，请稍后重试');
+
+};
+
+const startCountdown = () => {
+    countdown.value = 60;
+    const interval = setInterval(() => {
+        if (countdown.value > 0) {
+            countdown.value--;
+        } else {
+            clearInterval(interval);
+        }
+    }, 1000);
+};
+
+const validateEmail = (email) => {
+    const re = /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/;
+    return re.test(email);
+};
+
 
 function cancel() {
     isLoginVisible.value = false;
@@ -83,15 +131,17 @@ function cancel() {
 
 const loginOperation = async () => {
     try {
-        let response = await userLogin(sid.value, password.value);
+        let response = await userLogin(email.value, password.value);
         let data = await response.json();
-        if (data.success) {
-            useUserStore().setUser({ sid: sid.value });
+        if (data.code == 200) {
+            useUserStore().setUser({ email: email.value });
             isLoginVisible.value = false;
-            window.location.reload();//可以优化
+            window.location.reload();
             ElMessage.success("登录成功")
+        } else if (data.message == '用户不存在') {
+            ElMessage.error('登录失败，用户不存在');
         } else {
-            ElMessage.error('登录失败，请检查用户名和密码');
+            ElMessage.error('登录失败，请检查账户名和密码');
         }
     } catch (error) {
         console.error(error);
@@ -100,49 +150,59 @@ const loginOperation = async () => {
 }
 
 const registerOperation = async () => {
-    console.log(username.value, password.value, checkPwd.value);
+    console.log(username.value, password.value, checkPwd.value, verificationCode.value);
 
+    // 检查邮箱格式
+    if (!validateEmail(email.value)) {
+        ElMessage.error('请输入合法的邮箱地址');
+        return;
+    }
+
+    // 检查密码是否一致
     if (password.value != checkPwd.value) {
         ElMessage.error('密码不一致，请重新输入！');
         password.value = "";
         checkPwd.value = "";
         return;
     }
-    if (sid.value == '' || username.value == '' || password.value == '' || checkPwd.value == '') {
+
+    if (email.value == '' || username.value == '' || password.value == '' || checkPwd.value == '' || verificationCode.value == '') {
         ElMessage.error('请填写完整信息！');
         return;
     }
-    if (sid.value.length < 8) {
-        ElMessage.error('请输入长度大于8的学号!');
+
+    if (verificationCode == '') {
+        ElMessage.error('请输入验证码！');
         return;
     }
+
+
     if (password.value.length < 6) {
         ElMessage.error('密码长度必须大于等于6!');
         return;
     }
+
     try {
-        const response = await userRegister(sid.value, username.value, password.value);
+        const response = await userRegister(email.value, username.value, password.value, verificationCode.value);
         const data = await response.json();
-        console.log(data.code)
         if (data.code == 200) {
-            useUserStore().setUser({ sid: sid.value });
-            console.log(useUserStore().user);
+            useUserStore().setUser({ email: email.value });
             isLoginVisible.value = false;
             ElMessage.success("注册成功！");
-        } else {
+        }
+        else if (data.message == '邮箱已注册') {
+            ElMessage.error('邮箱已注册！');
+        } else if (data.message == '验证码错误') { // 这里要改
+            ElMessage.error('验证码错误！');
+        }
+        else {
             ElMessage.error('注册失败，请重试！');
         }
-        // 处理返回的数据，可能是显示成功消息或者处理错误
     } catch (error) {
         console.error(error);
         ElMessage.error('注册失败，请重试！');
     }
-}
-
-
-function adminLogin() {
-    window.open("http://123.249.98.179/admin/", "_blank");
-}
+};
 </script>
 
 <style scoped>
@@ -223,6 +283,21 @@ function adminLogin() {
 
 .main-box .container form .form-input {
     width: 350px;
+    height: 40px;
+    margin: 4px 0;
+    padding-left: 25px;
+    font-size: 13px;
+    letter-spacing: 0.15px;
+    border: none;
+    outline: none;
+    background-color: #ecf0f3;
+    transition: 0.25s ease;
+    border-radius: 8px;
+    box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #f9f9f9;
+}
+
+.main-box .container form .form-input-left {
+    width: 248px;
     height: 40px;
     margin: 4px 0;
     padding-left: 25px;
@@ -340,7 +415,6 @@ function adminLogin() {
     font-size: 14px;
     letter-spacing: 2px;
     background-color: #e74c3c;
-    /* Red color for cancel button */
     margin-top: 20px;
     color: #f9f9f9;
     cursor: pointer;
