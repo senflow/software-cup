@@ -72,6 +72,7 @@ import {
   ElContainer, ElAside, ElHeader, ElMain, ElButton,
   ElDropdown, ElDropdownMenu, ElDropdownItem, ElAvatar, ElRow, ElCol, ElPagination
 } from 'element-plus';
+import { useRouter } from 'vue-router';
 
 const avatar = ref('@/assets/avatar.png');
 const handleLoginClose = () => {
@@ -82,10 +83,13 @@ const handleLogin = () => {
   isLoginVisible.value = true;
 };
 
+const router = useRouter();
+
 const create = () => {
-  console.log(useUserStore().isAuthenticated);
-  console.log(useUserStore().user);
-  useUserStore().clearUser();
+  const { href } = router.resolve({
+    path: "/edit3",
+  });
+  window.open(href, "_block");
 };
 
 const filterType = ref('recent');

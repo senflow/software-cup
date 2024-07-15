@@ -100,7 +100,8 @@ const mySendVerificationCode = async () => {
     const response = await sendVerificationCode(email.value);
     console.log(response);
     const data = await response.json();
-    if (data.status == 200) {
+    console.log(data);
+    if (data.code == 200) {
         ElMessage.success('发送成功');
         startCountdown();
     }
@@ -185,14 +186,15 @@ const registerOperation = async () => {
     try {
         const response = await userRegister(email.value, username.value, password.value, verificationCode.value);
         const data = await response.json();
+        console.log(data);
         if (data.code == 200) {
             useUserStore().setUser({ email: email.value });
             isLoginVisible.value = false;
             ElMessage.success("注册成功！");
         }
-        else if (data.message == '邮箱已注册') {
+        else if (data.code == 506) {
             ElMessage.error('邮箱已注册！');
-        } else if (data.message == '验证码错误') { // 这里要改
+        } else if (data.code == 507) {
             ElMessage.error('验证码错误！');
         }
         else {

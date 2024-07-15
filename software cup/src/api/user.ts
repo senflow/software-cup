@@ -69,7 +69,7 @@ export async function sendVerificationCode(email: string) {
     return response;
 }
 
-export async function userRegister(email: string, name: string, password: string) {
+export async function userRegister(email: string, name: string, password: string, activeCode:string) {
     return fetch(url + '/user/register', {
         method: 'POST',
         headers: {
@@ -79,6 +79,7 @@ export async function userRegister(email: string, name: string, password: string
             "email": email,
             "name": name,
             "password": password,
+            "activeCode": activeCode,
         }),
     });
 }
