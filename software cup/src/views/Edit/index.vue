@@ -205,6 +205,7 @@ const editor = useEditor({
 }
 
 .bottomcount {
+  margin-top: 20px;
   background-color: rgba(207, 220, 245, 0.2);
   border-top: 1px solid rgba(156, 161, 159, 0.4);
   padding: 8px;
