@@ -94,9 +94,10 @@
         'Content-Type': 'multipart/form-data'
       }
     })
-    .then(() => {
+    .then(res => {
       fileList.value = []
       upload_btn.value = false
+      alert(res.data.text)
       ElMessage({ message: '图片上传成功', type: 'success' })
     })
     .catch(() => {

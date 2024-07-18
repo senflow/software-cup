@@ -57,8 +57,11 @@ import html from 'highlight.js/lib/languages/xml'
 import { common, createLowlight } from 'lowlight'
 // 字数统计
 import CharacterCount from '@tiptap/extension-character-count'
+import Collaboration from '@tiptap/extension-collaboration'
 import Heading from '@tiptap/extension-heading'
 import StarterKit from '@tiptap/starter-kit'
+import * as Y from 'yjs'
+import { IndexeddbPersistence } from 'y-indexeddb'
 import Placeholder from '@tiptap/extension-placeholder'
 import { UndoRound, MoreHorizOutlined } from '@vicons/material'
 import TaskItem from '@tiptap/extension-task-item'
@@ -220,8 +223,23 @@ const scrollToHeading = (id: string) => {
 const goToHeading = (id: string) => {
   router.push({ name: 'Editor', params: { id } });
 };
+// 定义 Props
+const props = defineProps({
+  documentid: {
+    type: String,
+    required: true
+  }
+});
+const ydoc = new Y.Doc()
 // 使用ref创建可变的响应式引用
 // 编辑器初始化
+const documentName = props.documentid
+new IndexeddbPersistence(documentName, ydoc)
+// Splitting the document name into separate parts
+const [entityType, entityID] = documentName.split('.')
+
+console.log(entityType) // Output: "article"
+console.log(entityID) // Output: "123"
 const editor = useEditor({
   content: ``,
   extensions: [
@@ -240,6 +258,10 @@ const editor = useEditor({
     ListItem,
     CharacterCount.configure({
       limit: 10000
+    }),
+    Collaboration.configure({
+      document: ydoc,
+      field: 'content',
     })
   ],
   onUpdate({ }) {
