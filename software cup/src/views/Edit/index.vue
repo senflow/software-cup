@@ -1,24 +1,7 @@
 <template>
   <div class="EditMain" ref="filecont" @mousedown="notsee()">
-    <ul @mousedown="see()" v-show="visiblemenu"
-      :style="{ left: position.left + 'px', top: position.top + 'px', display: (visiblemenu ? 'grid' : 'none') }"
-      class="contextmenu">
-      <div class="item" @click="polish()">
-        <el-icon>
-          <Brush />
-        </el-icon>
-        润色
-      </div>
-      <div class="item" @click="continuation()">
-        <el-icon>
-          <EditPen />
-        </el-icon>
-        续写
-      </div>
-    </ul>
     <div class="lefttools">
       <Outline @select-heading="goToHeading"></Outline>
-      <OCR />
     </div>
     <div class="editor">
       <div class="editorcard">
@@ -26,20 +9,57 @@
           <EditorMenu :editor="editor" />
         </div>
         <div class="editcont">
-          <EditorContent @scroll="hasscroll()" @mousemove="mousemove()"
-            @mouseup="selecttext($event)" style="padding: 16px; overflow-y: hidden" :editor="editor" />
+          <EditorContent @scroll="hasscroll()" @mousemove="mousemove()" @mouseup="selecttext($event)"
+            style="padding: 16px; overflow-y: hidden" :editor="editor" />
         </div>
         <div class="bottomcount">
           字数统计: {{ editor?.storage.characterCount.characters() }}
         </div>
       </div>
     </div>
-    <!-- <div class="righttools"></div> -->
+    <div class="righttools">
+      <OCR />
+      <br />
+      <div class="outline__list">
+        <h2 class="outline__title">润色</h2>
+        <p class="index_p">
+          <el-icon>
+            <Brush />
+          </el-icon>
+          选中文字开始润色
+          <el-icon>
+            <Brush />
+          </el-icon>
+        </p>
+        <el-button class="item" @click="polish()">
+          <el-icon>
+            <Brush />
+          </el-icon>
+          润色
+        </el-button>
+        <h2 class="outline__title">续写</h2>
+        <p class="index_p">
+          <el-icon>
+            <EditPen />
+          </el-icon>
+          选中文字开始续写
+          <el-icon>
+            <EditPen />
+          </el-icon>
+        </p>
+        <el-button class="item" @click="continuation()">
+          <el-icon>
+            <EditPen />
+          </el-icon>
+          续写
+        </el-button>
+      </div>
+    </div>
   </div>
 </template>
 
 <script lang="ts" setup>
-import {Brush, EditPen} from '@element-plus/icons-vue';
+import { Brush, EditPen } from '@element-plus/icons-vue';
 import { defineComponent, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { Editor, EditorContent, useEditor, BubbleMenu } from '@tiptap/vue-3';
 import { storeToRefs } from 'pinia'
@@ -88,13 +108,13 @@ var hasmove = ref(false);
 var hisstring: any;
 var selection: any;
 //进行润色的函数
-const polish=()=>{
+const polish = () => {
   console.log("Polish button clicked");
   visiblemenu.value = false;
   let formData = new FormData();
   // formData.append("username","xxxxxx");
   // formData.append("key","xxxxxx");
-  formData.append("cont",hisstring);
+  formData.append("cont", hisstring);
   let url = 'http://120.46.53.94:888/getpolish' //访问后端接口的url
   let method = 'post'
   axios({
@@ -110,12 +130,12 @@ const polish=()=>{
   });
 }
 //进行aiaireview
-const continuation=()=>{
+const continuation = () => {
   visiblemenu.value = false;
   let formData = new FormData();
   // formData.append("username","123456");
   // formData.append("key","xxxxxxx");
-  formData.append("cont",hisstring);
+  formData.append("cont", hisstring);
   let url = 'http://120.46.53.94:888/getcontinuation' //访问后端接口的url
   let method = 'post'
   axios({
@@ -272,6 +292,28 @@ onMounted(() => {
 </script>
 
 <style>
+.index_p {
+  font-size: 12px;
+}
+
+.outline__list {
+  display: flex;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 10px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  height: 300px;
+}
+
+.outline__title {
+  color: #666;
+  font-size: 1.2rem;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 5px;
+}
+
 /* .EditMain {
   position: relative;
   width: 100vw;
@@ -301,9 +343,10 @@ onMounted(() => {
 }
 
 .righttools {
-  background-color: rgba(206, 226, 117, 0.8);
-  height: 95vh;
-  width: 100%;
+  background-color: rgba(218, 245, 42, 0.8);
+  height: 90vh;
+  width: 20%;
+  margin-top: 20px;
   padding: 10px;
   box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
