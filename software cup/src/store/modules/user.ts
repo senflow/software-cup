@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 
 interface User {
-    sid: string;
+    email: string;
 }
 
 interface UserState {
@@ -22,6 +22,6 @@ export const useUserStore = defineStore('user', {
         }
     },
     getters: {
-        isAuthenticated: (state) => !!state.user,//两次取反获得登陆属性
+        isAuthenticated: (state) => !!state.user,
     },
 },)
