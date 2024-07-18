@@ -17,5 +17,6 @@
     "skipLibCheck": true,                                 /* Skip type checking all .d.ts files. */
     "moduleResolution": "node",
     "lib": ["esnext", "dom"],
+    "allowSyntheticDefaultImports": true
   }
 }
