@@ -18,9 +18,7 @@
     </ul>
     <div class="lefttools">
       <Outline @select-heading="goToHeading"></Outline>
-    </div>
-    <div class="lefttools">
-      <OCR></OCR>
+      <OCR />
     </div>
     <div class="editor">
       <div class="editorcard">
