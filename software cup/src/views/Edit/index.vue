@@ -17,7 +17,10 @@
       </div>
     </ul>
     <div class="lefttools">
-      <Outline>@select-heading="goToHeading"</Outline>
+      <Outline @select-heading="goToHeading"></Outline>
+    </div>
+    <div class="lefttools">
+      <OCR></OCR>
     </div>
     <div class="editor">
       <div class="editorcard">
@@ -25,7 +28,7 @@
           <EditorMenu :editor="editor" />
         </div>
         <div class="editcont">
-          <EditorContent @scroll="hasscroll()" @mousedown="notsee()" @mousemove="mousemove()"
+          <EditorContent @scroll="hasscroll()" @mousemove="mousemove()"
             @mouseup="selecttext($event)" style="padding: 16px; overflow-y: hidden" :editor="editor" />
         </div>
         <div class="bottomcount">
@@ -63,6 +66,7 @@ import { UndoRound, MoreHorizOutlined } from '@vicons/material'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import Outline from './Outline/index.vue'
+import OCR from './OCR/index.vue'
 // 使用Pinia
 import { useEditorStore } from '@/store'
 import EditorMenu from './EditorMenu/index.vue'
