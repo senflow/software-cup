@@ -1,7 +1,24 @@
 <template>
-  <div class="EditMain">
+  <div class="EditMain" ref="filecont" @mousedown="notsee()">
+    <ul @mousedown="see()" v-show="visiblemenu"
+      :style="{ left: position.left + 'px', top: position.top + 'px', display: (visiblemenu ? 'grid' : 'none') }"
+      class="contextmenu">
+      <div class="item" @click="polish()">
+        <el-icon>
+          <Brush />
+        </el-icon>
+        润色
+      </div>
+      <div class="item" @click="continuation()">
+        <el-icon>
+          <EditPen />
+        </el-icon>
+        续写
+      </div>
+    </ul>
     <div class="lefttools">
-      <Outline></Outline>
+      <Outline @select-heading="goToHeading"></Outline>
+      <OCR />
     </div>
     <div class="editor">
       <div class="editorcard">
@@ -9,7 +26,8 @@
           <EditorMenu :editor="editor" />
         </div>
         <div class="editcont">
-          <EditorContent style="padding: 16px; overflow-y: hidden" :editor="editor" />
+          <EditorContent @scroll="hasscroll()" @mousemove="mousemove()"
+            @mouseup="selecttext($event)" style="padding: 16px; overflow-y: hidden" :editor="editor" />
         </div>
         <div class="bottomcount">
           字数统计: {{ editor?.storage.characterCount.characters() }}
@@ -21,6 +39,7 @@
 </template>
 
 <script lang="ts" setup>
+import {Brush, EditPen} from '@element-plus/icons-vue';
 import { defineComponent, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { Editor, EditorContent, useEditor, BubbleMenu } from '@tiptap/vue-3';
 import { storeToRefs } from 'pinia'
@@ -45,15 +64,115 @@ import { UndoRound, MoreHorizOutlined } from '@vicons/material'
 import TaskItem from '@tiptap/extension-task-item'
 import TaskList from '@tiptap/extension-task-list'
 import Outline from './Outline/index.vue'
+import OCR from './OCR/index.vue'
 // 使用Pinia
 import { useEditorStore } from '@/store'
 import EditorMenu from './EditorMenu/index.vue'
 import { defineStore } from 'pinia'
 import { ElMessage } from 'element-plus';
+
+import axios from 'axios'
+
 const lowlight = createLowlight()
 lowlight.register({ html, ts, css, js })
+
+const aipolish = ref("")
+const filecont = ref(null);
+const aicontinuation = ref("")
+const visiblemenu = ref(false)
+const position = ref({
+  top: 0,
+  left: 0
+})
+var hasmove = ref(false);
+var hisstring: any;
+var selection: any;
+//进行润色的函数
+const polish=()=>{
+  console.log("Polish button clicked");
+  visiblemenu.value = false;
+  let formData = new FormData();
+  // formData.append("username","xxxxxx");
+  // formData.append("key","xxxxxx");
+  formData.append("cont",hisstring);
+  let url = 'http://120.46.53.94:888/getpolish' //访问后端接口的url
+  let method = 'post'
+  axios({
+    method,
+    url,
+    data: formData,
+  }).then(res => {
+    console.log('Response received:', res); // 打印完整响应
+    alert(res.data.answer);
+    console.log('Processed response:', res.data); // 打印处理后的响应数据
+  }).catch(error => {
+    console.error('Error during API call:', error); // 捕捉错误并打印
+  });
+}
+//进行aiaireview
+const continuation=()=>{
+  visiblemenu.value = false;
+  let formData = new FormData();
+  // formData.append("username","123456");
+  // formData.append("key","xxxxxxx");
+  formData.append("cont",hisstring);
+  let url = 'http://120.46.53.94:888/getcontinuation' //访问后端接口的url
+  let method = 'post'
+  axios({
+    method,
+    url,
+    data: formData,
+  }).then(res => {
+    alert(res.data.answer)
+    console.log(res.data.answer);
+  });
+}
+
+// 获取选中的文字
+const selecttext = (e: MouseEvent) => {
+  selection = window.getSelection();
+  if (selection != null && hisstring != selection) {
+    var content = selection.toString();
+    if (content != "") {
+      var rect = filecont.value.getBoundingClientRect();
+      visiblemenu.value = true
+      // alert(e.clientY)
+      // alert(e.clientX)
+      position.value.top = e.clientY;
+      position.value.left = e.clientX;
+      hisstring = content
+    }
+    // alert(content)
+  }
+  else {
+    hisstring = ""
+  }
+}
+//鼠标移动
+const mousemove = () => {
+  hasmove.value = true;
+}
+//鼠标点击
+const notsee = () => {
+  visiblemenu.value = false;
+  // selection.value="";
+}
+const see = () => {
+  visiblemenu.value = true;
+  // selection.value="";
+}
+//滚轮滚动
+const hasscroll = () => {
+  visiblemenu.value = false;
+  // window.getSelection().removeAllRanges()
+}
+
+
 const editorStore = useEditorStore()
 // 加载headings
+import { useRoute, useRouter } from 'vue-router';
+const route = useRoute();
+const router = useRouter();
 const loadHeadings = () => {
   const headings = [] as any[]
   if (!editor.value) return
@@ -90,6 +209,17 @@ const loadHeadings = () => {
   editor.value?.view.dispatch(transaction)
   editorStore.setHeadings(headings)
 }
+
+// 滚动到指定的 heading
+const scrollToHeading = (id: string) => {
+  const element = document.getElementById(id);
+  if (element) {
+    element.scrollIntoView({ behavior: 'smooth' });
+  }
+};
+const goToHeading = (id: string) => {
+  router.push({ name: 'Editor', params: { id } });
+};
 // 使用ref创建可变的响应式引用
 // 编辑器初始化
 const editor = useEditor({
@@ -123,6 +253,22 @@ const editor = useEditor({
   injectCSS: false,
 
 })
+
+watch(
+  () => route.params.id,
+  (newId) => {
+    if (newId) {
+      scrollToHeading(newId as string);
+    }
+  },
+  { immediate: true }
+);
+
+onMounted(() => {
+  if (route.params.id) {
+    scrollToHeading(route.params.id as string);
+  }
+});
 </script>
 
 <style>
@@ -386,5 +532,35 @@ b {
 .resize-cursor {
   cursor: ew-resize;
   cursor: col-resize;
+}
+
+.contextmenu {
+  width: 180px;
+  margin: 0;
+  background: #fff;
+  z-index: 3000;
+  position: absolute;
+  list-style-type: none;
+  padding: 5px;
+  padding-left: 15px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 400;
+  color: #333;
+  box-shadow: 2px 2px 3px 0 rgba(0, 0, 0, 0.3);
+  display: grid;
+  grid-template-columns: 50% 50%;
+
+  .item {
+    height: 35px;
+    width: 100%;
+    line-height: 35px;
+    color: rgb(29, 33, 41);
+    cursor: pointer;
+  }
+
+  .item:hover {
+    background: rgb(229, 230, 235);
+  }
 }
 </style>
