@@ -1,8 +1,9 @@
 <template>
   <div class="editor-menu">
     <template v-for="(item, index) in items" :key="index">
-      <div class="divider" v-if="item.type === 'divider'" />
-      <MenuItem v-else v-bind="item" />
+      <div class="divider" v-if="item.type === 'divider'"></div>
+      <MenuItem v-else v-bind="item">
+      </MenuItem>
     </template>
   </div>
 </template>
@@ -149,7 +150,7 @@ const items = [
 ]
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .editor-menu {
   display: flex;
   align-items: center;

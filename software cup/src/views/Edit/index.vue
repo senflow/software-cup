@@ -216,7 +216,7 @@ const editor = useEditor({
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
 b {
   font-weight: bold;
 }
@@ -235,7 +235,8 @@ b {
 
 .tiptap p.is-editor-empty:first-child::before {
   color: #adb5bd;
-  content: attr(data-placeholder);
+  content:
+    attr(data-placeholder);
   float: left;
   height: 0;
   pointer-events: none;

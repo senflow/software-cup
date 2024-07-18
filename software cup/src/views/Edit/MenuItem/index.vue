@@ -17,7 +17,7 @@ const props = defineProps<{
 }>()
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .menu-item {
   background: transparent;
   border: none;
