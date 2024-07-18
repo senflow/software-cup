@@ -193,7 +193,6 @@ const handlePageChange = (page: number) => {
   transform: translate(-50%, -50%);
   width: 300px;
   padding: 20px;
-  background-color: #ffffff;
   border-radius: 5px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;

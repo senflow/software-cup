@@ -317,6 +317,10 @@ const registerOperation = async () => {
     color: #a0a5a8;
 }
 
+.main-box .container form .form-input-left::placeholder {
+    color: #a0a5a8;
+}
+
 .main-box .container-register {
     z-index: 100;
     left: calc(100% - 650px);
