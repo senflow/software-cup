@@ -87,7 +87,7 @@ const router = useRouter();
 
 const create = () => {
   const { href } = router.resolve({
-    path: "/edit3/new",
+    path: "/edit3/P5qM3rTv8xYu6ZxO2bS7eQ4cHfDbA0v",
   });
   window.open(href, "_block");
 };
