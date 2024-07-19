@@ -87,14 +87,14 @@ const router = useRouter();
 
 const create = () => {
   const { href } = router.resolve({
-    path: "/edit3/P5qM3rTv8xYu6ZxO2bS7eQ4cHfDbA0v",
+    path: "/edit3/Yu6ZxHfDbA0vP5qM3rTv8xO2bS7eQ4c",
   });
   window.open(href, "_block");
 };
 
 const filterType = ref('recent');
 const files = ref([
-  { name: '测试文档', owner: 'admin', recent: '10:57', size: '1.65 KB', checked: true, icon: 'el-icon-document' },
+  { name: '2221大班班委换届方案', owner: 'admin', recent: '10:57', size: '1.65 KB', checked: true, icon: 'el-icon-document' },
   { name: '大班课程报名登记表', owner: 'CCTS', recent: '07-19 20:01', size: '375.75 MB', checked: false, icon: 'el-icon-document' },
   { name: '2221大班暑期在校信息统计', owner: 'Sunny', recent: '07-09 23:53', size: '-', checked: false, icon: 'el-icon-document' },
   { name: '试点通过名单', owner: 'CCRW', recent: '07-06 21:29', size: '18.47 KB', checked: true, icon: 'el-icon-document' },
