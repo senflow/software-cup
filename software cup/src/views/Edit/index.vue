@@ -83,7 +83,8 @@ import OCR from './OCR/index.vue'
 import { useEditorStore } from '@/store'
 import EditorMenu from './EditorMenu/index.vue'
 import { defineStore } from 'pinia'
-import { ElMessage } from 'element-plus';
+import { ElMessage, ElMessageBox } from 'element-plus'
+import type { Action } from 'element-plus'
 
 import axios from 'axios'
 
@@ -116,8 +117,10 @@ const polish = () => {
     data: formData,
   }).then(res => {
     console.log('Response received:', res); // 打印完整响应
-    alert(res.data.answer);
-    console.log('Processed response:', res.data); // 打印处理后的响应数据
+    // alert(res.data.answer);
+    ElMessageBox.alert(res.data.answer, '润色结果', {
+      confirmButtonText: '确定',
+    });
   }).catch(error => {
     console.error('Error during API call:', error); // 捕捉错误并打印
   });
@@ -136,7 +139,9 @@ const continuation = () => {
     url,
     data: formData,
   }).then(res => {
-    alert(res.data.answer)
+    ElMessageBox.alert(res.data.answer, '续写结果', {
+      confirmButtonText: '确定',
+    });
     console.log(res.data.answer);
   });
 }
@@ -154,7 +159,9 @@ const layout = () => {
     url,
     data: formData,
   }).then(res => {
-    alert(res.data.answer)
+    ElMessageBox.alert(res.data.answer, '排版格式', {
+      confirmButtonText: '确定',
+    });
     console.log(res.data.answer);
   });
 }
