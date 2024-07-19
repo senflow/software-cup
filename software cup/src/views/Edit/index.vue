@@ -21,16 +21,9 @@
       <OCR />
       <br />
       <div class="outline__list">
+        <h2 style="margin-top: -5px;margin-bottom: -5px;">AI特色功能 </h2>
+        <p class="index_p">选中文字开始操作！</p>
         <h2 class="outline__title">润色</h2>
-        <p class="index_p">
-          <el-icon>
-            <Brush />
-          </el-icon>
-          选中文字开始润色
-          <el-icon>
-            <Brush />
-          </el-icon>
-        </p>
         <el-button class="item" @click="polish()">
           <el-icon>
             <Brush />
@@ -38,20 +31,18 @@
           润色
         </el-button>
         <h2 class="outline__title">续写</h2>
-        <p class="index_p">
-          <el-icon>
-            <EditPen />
-          </el-icon>
-          选中文字开始续写
-          <el-icon>
-            <EditPen />
-          </el-icon>
-        </p>
         <el-button class="item" @click="continuation()">
           <el-icon>
             <EditPen />
           </el-icon>
           续写
+        </el-button>
+        <h2 class="outline__title">排版</h2>
+        <el-button class="item" @click="polish()">
+          <el-icon>
+            <Document />
+          </el-icon>
+          排版
         </el-button>
       </div>
     </div>
@@ -59,7 +50,7 @@
 </template>
 
 <script lang="ts" setup>
-import { Brush, EditPen } from '@element-plus/icons-vue';
+import { Brush, EditPen, Document } from '@element-plus/icons-vue';
 import { defineComponent, onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { Editor, EditorContent, useEditor, BubbleMenu } from '@tiptap/vue-3';
 import { storeToRefs } from 'pinia'
@@ -325,7 +316,7 @@ onMounted(() => {
   padding: 10px;
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  height: 300px;
+  height: 350px;
 }
 
 .outline__title {
@@ -336,14 +327,6 @@ onMounted(() => {
   padding-bottom: 5px;
 }
 
-/* .EditMain {
-  position: relative;
-  width: 100vw;
-  height: 100vh;
-  display: grid;
-  grid-template-columns: 20% 60% 20%;
-} */
-/* 没右边黄的 */
 .EditMain {
   position: relative;
   width: 98vw;
@@ -361,7 +344,6 @@ onMounted(() => {
   margin-top: 20px;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
-  box-sizing: border-box;
 }
 
 .righttools {

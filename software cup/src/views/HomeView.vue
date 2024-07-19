@@ -40,7 +40,7 @@
           <el-col :span="4">文档大小</el-col>
         </el-row>
         <div class="card-container">
-          <file-card v-for="file in paginatedFiles" :key="file.name" v-bind="file"></file-card>
+          <file-card v-for="file in paginatedFiles" :key="file.name" v-bind="file" @click="GoIn()"></file-card>
         </div>
         <el-pagination class="pagination" :current-page="currentPage" :page-size="pageSize"
           :total="filteredFiles.length" @current-change="handlePageChange" layout="prev, pager, next" />
@@ -87,23 +87,31 @@ const router = useRouter();
 
 const create = () => {
   const { href } = router.resolve({
-    path: "/edit3",
+    path: "/edit3/new",
   });
   window.open(href, "_block");
 };
 
 const filterType = ref('recent');
 const files = ref([
-  { name: '大班课程报名登记表', owner: 'CCTS', recent: '20:01', size: '375.75 MB', checked: false, icon: 'el-icon-document' },
+  { name: '测试文档', owner: 'admin', recent: '10:57', size: '1.65 KB', checked: true, icon: 'el-icon-document' },
+  { name: '大班课程报名登记表', owner: 'CCTS', recent: '07-19 20:01', size: '375.75 MB', checked: false, icon: 'el-icon-document' },
   { name: '2221大班暑期在校信息统计', owner: 'Sunny', recent: '07-09 23:53', size: '-', checked: false, icon: 'el-icon-document' },
-  { name: '试点通过名单', owner: '黄梁淳矣', recent: '07-06 21:29', size: '18.47 KB', checked: false, icon: 'el-icon-document' },
-  { name: '神山寺昨天大都是大V', owner: 'kk_tatay', recent: '07-06 16:20', size: '1.65 KB', checked: false, icon: 'el-icon-document' },
-  { name: '讲师互评表格', owner: '0625', recent: '07-06 01:09', size: '23.23 KB', checked: false, icon: 'el-icon-document' },
+  { name: '试点通过名单', owner: 'CCRW', recent: '07-06 21:29', size: '18.47 KB', checked: true, icon: 'el-icon-document' },
+  { name: '神山寺', owner: 'kk_tatay', recent: '07-06 16:20', size: '1.65 KB', checked: false, icon: 'el-icon-document' },
+  { name: '讲师互评表格', owner: '0625', recent: '07-06 01:09', size: '23.23 KB', checked: true, icon: 'el-icon-document' },
   { name: 'OS 助教报名', owner: 'yofingert', recent: '07-05 20:22', size: '22.77 MB', checked: false, icon: 'el-icon-document' },
   { name: '2024暑假一轮选课', owner: '0625', recent: '06-28 18:12', size: '35.17 KB', checked: false, icon: 'el-icon-document' },
-  { name: '班级统计', owner: '星空下的暴走奶昔', recent: '06-27 21:16', size: '22.53 KB', checked: false, icon: 'el-icon-document' },
+  { name: '班级统计', owner: 'SXTY', recent: '06-27 21:16', size: '22.53 KB', checked: false, icon: 'el-icon-document' },
   { name: '挑战性任务报名', owner: 'yofingert', recent: '06-27 20:19', size: '-', checked: false, icon: 'el-icon-document' },
 ]);
+
+const GoIn = () => {
+  const { href } = router.resolve({
+    path: "/edit3/J4kL8pQv2sXw7ZyMn3aT9fR5dHgCbE1u",
+  });
+  window.open(href, "_block");
+}
 
 const pageSize = 8;
 const currentPage = ref(1);
