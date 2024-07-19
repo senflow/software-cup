@@ -38,7 +38,7 @@
           续写
         </el-button>
         <h2 class="outline__title">排版</h2>
-        <el-button class="item" @click="polish()">
+        <el-button class="item" @click="layout()">
           <el-icon>
             <Document />
           </el-icon>
@@ -103,7 +103,6 @@ var hisstring: any;
 var selection: any;
 //进行润色的函数
 const polish = () => {
-  console.log("Polish button clicked");
   visiblemenu.value = false;
   let formData = new FormData();
   // formData.append("username","xxxxxx");
@@ -131,6 +130,24 @@ const continuation = () => {
   // formData.append("key","xxxxxxx");
   formData.append("cont", hisstring);
   let url = 'http://120.46.53.94:888/getcontinuation' //访问后端接口的url
+  let method = 'post'
+  axios({
+    method,
+    url,
+    data: formData,
+  }).then(res => {
+    alert(res.data.answer)
+    console.log(res.data.answer);
+  });
+}
+
+const layout = () => {
+  visiblemenu.value = false;
+  let formData = new FormData();
+  // formData.append("username","123456");
+  // formData.append("key","xxxxxxx");
+  formData.append("cont", hisstring);
+  let url = 'http://120.46.53.94:888/getcomposition' //访问后端接口的url
   let method = 'post'
   axios({
     method,
