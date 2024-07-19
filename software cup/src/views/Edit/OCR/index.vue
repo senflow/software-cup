@@ -69,29 +69,31 @@ const beforeRemove = () => {
   }
   
   const uploadimg = () => {
-    let formData = new FormData()
-    console.log(localStorage.getItem('email'))
-    formData.append("email", "20101021@buaa.edu.cn")
-  
-    fileList.value.forEach((file) => {
-      formData.append("file", file.raw)
-      console.log(file.raw)
-    })
-  
-    let url = 'http://10.193.208.112:5000/uploadimages'
-    let method = 'post'
-    axios({
-      method,
-      url,
-      data: formData,
-      headers: {
-        'Content-Type': 'multipart/form-data'
-      }
-    })
+  let formData = new FormData()
+  console.log(localStorage.getItem('email'))
+  formData.append("email", "20101021@buaa.edu.cn")
+
+  fileList.value.forEach((file) => {
+    formData.append("file", file.raw)
+    console.log(file.raw)
+  })
+
+  let url = 'http://120.46.53.94:888/uploadimages'
+  let method = 'post'
+  axios({
+    method,
+    url,
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data'
+    }
+  })
     .then(res => {
       fileList.value = []
       upload_btn.value = false
-      alert(res.data.text)
+      ElMessageBox.alert(res.data.text, '识别结果', {
+        confirmButtonText: '确定',
+      });
       ElMessage({ message: '图片上传成功', type: 'success' })
     })
     .catch(() => {

@@ -10,7 +10,7 @@
           <el-button type="primary">模板</el-button>
         </div>
         <div class="toolbar">
-          <span>Tom</span>
+          <!-- <span>Tom</span> -->
           <el-avatar class="el-drop" v-if="useUserStore().isAuthenticated" round :size="48" :src="avatar" />
           <el-avatar class="el-drop" v-else @click="handleLogin()" round :size="48">
             登录
